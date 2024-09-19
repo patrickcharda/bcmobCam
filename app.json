@@ -1,7 +1,16 @@
 {
   "expo": {
-    "name": "bcweb",
-    "slug": "bcweb",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
+    "name": "bcmob",
+    "slug": "bcmob",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,14 +30,14 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/BTS1.png"
       },
-      "package": "com.pcharda.bcweb"
+      "package": "com.pcharda.bcmob"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "ae7de4e1-1cec-4ed2-8c6c-5bc47af897ff"
+        "projectId": "2b2dfdda-ede6-4206-a707-fb1b211e0d9b"
       }
     },
     "owner": "pcharda"

@@ -1,8 +1,9 @@
-import { SET_BACKURL, SET_URL } from "./actions";
+import { SET_BACKURL, SET_URL, UNSET_ZEBRA } from "./actions";
 
 const initialState = { 
     backurl: false,
     url: "",
+    zebra: true,
 };
 
 const configReducer = (state=initialState, action) => {
@@ -16,6 +17,11 @@ const configReducer = (state=initialState, action) => {
             return {
                 ...state,
                 url: action.payload,
+            };
+        case UNSET_ZEBRA:
+            return {
+                ...state,
+                zebra:!state.zebra,
             };
         default:
             return state;

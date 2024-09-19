@@ -1,5 +1,6 @@
 import Bc from '../Bc';
 import ScanInput from "../ScanInput";
+import CamInput from "../CamInput";
 import { StyleSheet, View } from "react-native";
 import Message from "../Message";
 import Footer from "../Footer";
@@ -12,12 +13,13 @@ const BcScreen = ({ route, navigation }) => {
   const isActionBeingExecuted = useSelector((state) => state.tokenReducer.isActionBeingPerformed);
 
   const scanView = useSelector((state) => state.tokenReducer.scanView);
+  const scanZebraMode = useSelector((state) => state.configReducer.zebra);
 
   return (
     <View style={{flex:1}}>
       <Message />
       <View style={styles.container}>
-        {scanView?<ScanInput />:null}
+        {scanView? (scanZebraMode ? <ScanInput /> : <CamInput />): null}
         <Bc tabPces={ tabPces } />  
       </View>
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 55, backgroundColor: '#00334A'}}>

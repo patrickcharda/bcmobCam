@@ -53,6 +53,7 @@ export const EMPTY_PCES_CHANGED = "EMPTY_PCES_CHANGED";
 //action's type to set application
 export const SET_BACKURL = "SET_BACKURL";
 export const SET_URL = "SET_URL";
+export const UNSET_ZEBRA = "UNSET_ZEBRA";
 
 //action creators for API to get pces and accs...
 
@@ -323,5 +324,11 @@ export const setUrl = (anurl) => {
   return {
     type: SET_URL,
     payload: anurl,
+  };
+};
+
+export const unsetZebra = () => {
+  return {
+    type: UNSET_ZEBRA,
   };
 };

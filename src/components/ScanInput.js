@@ -33,7 +33,7 @@ const ScanInput =  () => {
           positionDiese + 1,
           positionDiese + 7
         );
-        if (numPiece.length === 6) {
+        if (pce_num.length === 6) {
           //search pce
           dispatch(searchPceId(pce_num));
           setValue("");
