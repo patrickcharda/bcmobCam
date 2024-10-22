@@ -24,6 +24,8 @@ import {
   SEARCH_PCE_ID,
   ADD_PCE,
   EMPTY_PCES_CHANGED,
+  SET_SORT_CRITERIA_OTHERLIST,
+  SET_SORT_CRITERIA,
 } from "./actions";
 
 const initialState = {
@@ -36,6 +38,8 @@ const initialState = {
   accsLoaded:[],
   accsProp:[],
   pcesChanged:[],
+  sortCriteria: '',
+  sortOrder:'asc',
 };
 
 const getFormatedDate = () => {
@@ -58,13 +62,157 @@ const getFormatedDate = () => {
 
 const pcesAccsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_SORT_CRITERIA:
+      const new_Criteria= action.payload.criteria;
+      const new_Order= action.payload.order;
+      const choosenList = action.payload.listName;
+      let newListe = [];
+      //console.error("CHOOSEN LIST :"+ choosenList1);
+      switch (choosenList) {
+        case 'other':
+          newListe= cloneDeep(state.pcesOther);
+          break;
+        case 'proposed':
+          newListe= cloneDeep(state.pcesProp);
+          break;
+        case 'loaded':
+          newListe= cloneDeep(state.pcesLoaded);
+          break;
+      }
+      /*Sorting logic based on criteria
+      */
+      newListe.sort((a,b) => {
+        if (new_Criteria === 'pce_num') {
+          if (new_Order === 'asc') {
+            return a.pce_num.localeCompare(b.pce_num);
+          } else {
+            return b.pce_num.localeCompare(a.pce_num);
+          }
+        } else if (new_Criteria === 'pce_nom_etude') {
+          if (new_Order === 'asc') {
+            return a.pce_nom_etude.localeCompare(b.pce_nom_etude);
+          } else {
+            return b.pce_nom_etude.localeCompare(a.pce_nom_etude);
+          }
+        } else if (new_Criteria === 'pce_ref_etude') {
+          if (new_Order === 'asc') {
+            return a.pce_ref_etude.localeCompare(b.pce_ref_etude);
+          } else {
+            return b.pce_ref_etude.localeCompare(a.pce_ref_etude);
+          }
+        } else if (new_Criteria === 'pce_type_pdt') {
+          if (new_Order === 'asc') {
+            return a.pce_type_pdt.localeCompare(b.pce_type_pdt);
+          } else {
+            return b.pce_type_pdt.localeCompare(a.pce_type_pdt);
+          }
+        } else if (new_Criteria === 'pce_ref_client') {
+          if (new_Order === 'asc') {
+            return a.pce_ref_client.localeCompare(b.pce_ref_client);
+          } else {
+            return b.pce_ref_client.localeCompare(a.pce_ref_client);
+          }
+        } else if (new_Criteria === 'pce_poids') {
+          if (new_Order === 'asc') {
+            return a.pce_poids - b.pce_poids;
+          } else {
+            return b.pce_poids - a.pce_poids;
+          }
+        }
+        return 0;
+      });
+      newListe.map((piece) => (
+        console.log(`pce_num : ${piece.pce_num}`)
+      ));
+      switch (choosenList) {
+        case 'other':
+          //console.error("SWITCH OTHER :"+ choosenList);
+          return {
+            ...state,
+            sortCriteria: action.payload.criteria,
+            sortOrder: action.payload.order,
+            pcesOther: newListe,
+          }
+        case 'proposed':
+          //console.error("SWITCH PROPOSED :"+ choosenList);
+          return {
+            ...state,
+            sortCriteria: action.payload.criteria,
+            sortOrder: action.payload.order,
+            pcesProp: newListe,
+          }
+        case 'loaded':
+          //console.error("SWITCH LOADED :"+ choosenList);
+          return {
+            ...state,
+            sortCriteria: action.payload.criteria,
+            sortOrder: action.payload.order,
+            pcesLoaded: newListe,
+          }
+        default:
+          return state;
+      }
+    case SET_SORT_CRITERIA_OTHERLIST:
+      const newCriteria= action.payload.criteria;
+      const newOrder= action.payload.order;
+      const newListPcesOther = cloneDeep(state.pcesOther);
+
+      /*Sorting logic based on criteria
+      */
+      newListPcesOther.sort((a,b) => {
+        if (newCriteria === 'pce_num') {
+          if (newOrder === 'asc') {
+            return a.pce_num - b.pce_num;
+          } else {
+            return b.pce_num - a.pce_num;
+          }
+        } else if (newCriteria === 'pce_nom_etude') {
+          if (newOrder === 'asc') {
+            return a.pce_nom_etude.localeCompare(b.pce_nom_etude);
+          } else {
+            return b.pce_nom_etude.localeCompare(a.pce_nom_etude);
+          }
+        } else if (newCriteria === 'pce_ref_etude') {
+          if (newOrder === 'asc') {
+            return a.pce_ref_etude.localeCompare(b.pce_ref_etude);
+          } else {
+            return b.pce_ref_etude.localeCompare(a.pce_ref_etude);
+          }
+        } else if (newCriteria === 'pce_type_pdt') {
+          if (newOrder === 'asc') {
+            return a.pce_type_pdt.localeCompare(b.pce_type_pdt);
+          } else {
+            return b.pce_type_pdt.localeCompare(a.pce_type_pdt);
+          }
+        } else if (newCriteria === 'pce_ref_client') {
+          if (newOrder === 'asc') {
+            return a.pce_ref_client.localeCompare(b.pce_ref_client);
+          } else {
+            return b.pce_ref_client.localeCompare(a.pce_ref_client);
+          }
+        } else if (newCriteria === 'pce_poids') {
+          if (newOrder === 'asc') {
+            return a.pce_poids - b.pce_poids;
+          } else {
+            return b.pce_poids - a.pce_poids;
+          }
+        }
+        return 0;
+      });
+
+      return {
+        ...state,
+        sortCriteria: action.payload.criteria,
+        sortOrder: action.payload.order,
+        pcesOther: newListPcesOther,
+      }
     case EMPTY_PCES_CHANGED:
       return {
         ...state,
         pcesChanged:[]
       }
     case ADD_PCE:
-      console.error(action.payload);
+      //console.error(action.payload);
       let changedPce = Object.assign({},action.payload);
       return {
         ...state,

@@ -51,6 +51,10 @@ const BcPce = ( {piece, loaded, headColor} ) => {
     setModalVisible(false);
   };
 
+  const handleBlur = () => {
+    handleConfirm();
+  }
+
   const handleCancel = () => {
     // Handle the cancel action here
     //console.log('Cancelled');
@@ -147,6 +151,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                           placeholder='Saisissez le texte ici'
                           multiline
                           maxLength={600}
+                          onBlur={handleBlur}
                           ref={textInputRef}
                         />
                         <View style={styles.modalBtns}>

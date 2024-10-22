@@ -15,7 +15,7 @@ const LogoutButton = () => {
   let tab = [];
   tab.push(username);
   let url = BASE_URL+"/apps/userapplogout/";
-  let token = "";
+  let token = useSelector((state) => state.tokenReducer.token);
 
   return (
     <Pressable onPress={() => {dispatch(apiCall(url, token, tab));dispatch(signout()); dispatch(purgePcesAccs()); dispatch(purgeBc()); dispatch(apiEmptyData());}} style={{ position: 'absolute', left: 30, bottom: -10}}>

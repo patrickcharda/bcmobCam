@@ -9,8 +9,8 @@
         }
       ]
     ],
-    "name": "bcmob",
-    "slug": "bcmob",
+    "name": "bcweb",
+    "slug": "bcweb",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -30,7 +30,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/BTS1.png"
       },
-      "package": "com.pcharda.bcmob"
+      "package": "com.pcharda.bcweb"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -19,6 +19,7 @@ const BcHeader = ({ currentBc }) => {
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [text, setText] = React.useState(bc.bc_observ);
+  const textInputRef = React.useRef(null); // Create the reference
 
   const handleConfirm = (bc) => {
     // Handle the confirm action here
@@ -32,6 +33,10 @@ const BcHeader = ({ currentBc }) => {
     // Handle the cancel action here
     //console.log('Cancelled');
     setModalVisible(false);
+  };
+
+  const handleBlur = () => {
+    handleConfirm(bc);
   };
 
   const hasNullValue = (field) => {
@@ -79,6 +84,8 @@ const BcHeader = ({ currentBc }) => {
                           placeholder='Saisissez le texte ici'
                           multiline
                           maxLength={600}
+                          onBlur={handleBlur}
+                          ref={textInputRef}
                         />
                         <View style={styles.modalBtns}>
                         {/* <Button title="Confirmer" onPress={() => {handleConfirm(bc)}} />

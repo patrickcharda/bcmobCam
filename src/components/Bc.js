@@ -5,7 +5,7 @@ import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { defineMessage, changePceDate, changePceLoadedDate, changePcePropDate, changePceOtherDate, loadFullPcesTab, loadLoadedPcesTab,
    loadPropPcesTab, loadOtherPcesTab, loadLoadedAccs, loadPropAccs, loadAccs, changeAccDate,
-    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc, emptyPcesChanged } from "../redux/actions";
+    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc, emptyPcesChanged, setSortCriteriaOtherlist, setSortCriteria } from "../redux/actions";
 import {
   ScrollView,
   View,
@@ -14,6 +14,9 @@ import {
   Modal,
   Pressable,
   ActivityIndicator,
+  Button,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import * as Device from "expo-device";
@@ -22,6 +25,7 @@ import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import { AntDesign } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 //import { BASE_URL } from "../env";
 
 
@@ -58,6 +62,7 @@ const Bc = ({ tabPces }) => {
   const [isLoadAccsOpen, setIsLoadAccsOpen] = React.useState(false);
   const [isPropAccsOpen, setIsPropAccsOpen] = React.useState(false);
   const [modalReinitVisible, setModalReinitVisible] = React.useState(false);
+  const [modalSortVisible, setModalSortVisible] = React.useState(false);
   const navigation = useNavigation();
   const bonChargement = useSelector((state) => state.bcReducer.bc);
   const [isActionBeingExecuted, setIsActionBeingExecuted] = React.useState(false);
@@ -68,7 +73,59 @@ const Bc = ({ tabPces }) => {
   const [btnListLoadColor, setBtnListLoadColor] = React.useState('#007FA9');
   const [btnListPropColor, setBtnListPropColor] = React.useState('#82CFD8');
   const [btnListOtherColor, setBtnListOtherColor] = React.useState('#CEDDDE');
-  
+
+  const [activeList, setActiveList] = React.useState(null);
+
+  const sortingOptionsLoaded = [
+    { id: '1', label: 'Tri par numéro de pièce (Ascendant)', criteria: 'pce_num', order: 'asc' },
+    { id: '2', label: 'Tri par numéro de pièce (Descendant)', criteria: 'pce_num', order: 'desc' },
+    { id: '3', label: 'Tri par nom d\'étude (Ascendant)', criteria: 'pce_nom_etude', order: 'asc' },
+    { id: '4', label: 'Tri par nom d\'étude (Descendant)', criteria: 'pce_nom_etude', order: 'desc' },
+    { id: '5', label: 'Tri par réf. d\'étude (Ascendant)', criteria: 'pce_ref_etude', order: 'asc' },
+    { id: '6', label: 'Tri par réf. d\'etude (Descendant)', criteria: 'pce_ref_etude', order: 'desc' },
+    { id: '7', label: 'Tri par type de produit (Ascendant)', criteria: 'pce_type_pdt', order: 'asc' },
+    { id: '8', label: 'Tri par type de produit (Descendant)', criteria: 'pce_type_pdt', order: 'desc' },
+    { id: '9', label: 'Tri par réf. client (Ascendant)', criteria: 'pce_ref_client', order: 'asc' },
+    { id: '10', label: 'Tri par réf. client (Descendant)', criteria: 'pce_ref_client', order: 'desc' },
+    { id: '11', label: 'Tri par poids (Ascendant)', criteria: 'pce_poids', order: 'asc' },
+    { id: '12', label: 'Tri par poids (Descendant)', criteria: 'pce_poids', order: 'desc' },
+  ];
+
+  const sortingOptionsProposed = [
+    { id: '1', label: 'Tri par numéro de pièce (Ascendant)', criteria: 'pce_num', order: 'asc' },
+    { id: '2', label: 'Tri par numéro de pièce (Descendant)', criteria: 'pce_num', order: 'desc' },
+    { id: '3', label: 'Tri par nom d\'étude (Ascendant)', criteria: 'pce_nom_etude', order: 'asc' },
+    { id: '4', label: 'Tri par nom d\'étude (Descendant)', criteria: 'pce_nom_etude', order: 'desc' },
+    { id: '5', label: 'Tri par réf. d\'étude (Ascendant)', criteria: 'pce_ref_etude', order: 'asc' },
+    { id: '6', label: 'Tri par réf. d\'etude (Descendant)', criteria: 'pce_ref_etude', order: 'desc' },
+    { id: '7', label: 'Tri par type de produit (Ascendant)', criteria: 'pce_type_pdt', order: 'asc' },
+    { id: '8', label: 'Tri par type de produit (Descendant)', criteria: 'pce_type_pdt', order: 'desc' },
+    { id: '9', label: 'Tri par réf. client (Ascendant)', criteria: 'pce_ref_client', order: 'asc' },
+    { id: '10', label: 'Tri par réf. client (Descendant)', criteria: 'pce_ref_client', order: 'desc' },
+    { id: '11', label: 'Tri par poids (Ascendant)', criteria: 'pce_poids', order: 'asc' },
+    { id: '12', label: 'Tri par poids (Descendant)', criteria: 'pce_poids', order: 'desc' },
+  ];
+
+  const sortingOptionsOther = [
+    { id: '1', label: 'Tri par numéro de pièce (Ascendant)', criteria: 'pce_num', order: 'asc' },
+    { id: '2', label: 'Tri par numéro de pièce (Descendant)', criteria: 'pce_num', order: 'desc' },
+    { id: '3', label: 'Tri par nom d\'étude (Ascendant)', criteria: 'pce_nom_etude', order: 'asc' },
+    { id: '4', label: 'Tri par nom d\'étude (Descendant)', criteria: 'pce_nom_etude', order: 'desc' },
+    { id: '5', label: 'Tri par réf. d\'étude (Ascendant)', criteria: 'pce_ref_etude', order: 'asc' },
+    { id: '6', label: 'Tri par réf. d\'etude (Descendant)', criteria: 'pce_ref_etude', order: 'desc' },
+    { id: '7', label: 'Tri par type de produit (Ascendant)', criteria: 'pce_type_pdt', order: 'asc' },
+    { id: '8', label: 'Tri par type de produit (Descendant)', criteria: 'pce_type_pdt', order: 'desc' },
+    { id: '9', label: 'Tri par réf. client (Ascendant)', criteria: 'pce_ref_client', order: 'asc' },
+    { id: '10', label: 'Tri par réf. client (Descendant)', criteria: 'pce_ref_client', order: 'desc' },
+    { id: '11', label: 'Tri par poids (Ascendant)', criteria: 'pce_poids', order: 'asc' },
+    { id: '12', label: 'Tri par poids (Descendant)', criteria: 'pce_poids', order: 'desc' },
+  ];
+
+  const handleSortOptionPress = (option) => {
+    dispatch(setSortCriteria({ criteria: option.criteria, order: option.order, listName: activeList }));
+    setModalSortVisible(false);
+  };
+ 
   const handleClickInLoadList = () => {
     setBtnListLoadColor('#6DA557')
   };
@@ -118,7 +175,7 @@ const Bc = ({ tabPces }) => {
   const pcesLoaded = useSelector((state) => state.pcesAccsReducer.pcesLoaded);
   const pcesProp = useSelector((state) => state.pcesAccsReducer.pcesProp);
   const pcesOther = useSelector((state) => state.pcesAccsReducer.pcesOther);
-  const pcesChanged = useSelector((state) => state.pcesAccsReducer.pcesChanged);
+  //const pcesChanged = useSelector((state) => state.pcesAccsReducer.pcesChanged); //new
 
   /* récupération des produits du state */
   const accs = useSelector((state) => state.pcesAccsReducer.accs);
@@ -743,9 +800,42 @@ const Bc = ({ tabPces }) => {
 
         {isOpened && <View><BcHeader currentBc={bonChargement} /></View>}
         <ScrollView>
-          <Pressable onPress = {()=>{setIsLoadListOpen(!isLoadListOpen)}} style={{backgroundColor:btnListLoadColor}} onPressIn={ handleClickInLoadList } onPressOut={ handleClickOutLoadList }>
+          <Pressable onPress = {()=>{setActiveList('loaded');setIsLoadListOpen(!isLoadListOpen)}} style={{backgroundColor:btnListLoadColor}} onPressIn={ handleClickInLoadList } onPressOut={ handleClickOutLoadList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
-              <Text style={{...styles.defaultText, color: 'white'}}> Pièces chargées {piecesLoaded.length} / {pces.length}</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{...styles.defaultText, color: 'white'}}> Pièces chargées {piecesLoaded.length} / {pces.length}   </Text>
+                {/* TRIER LES PIECES CHARGEES */}
+                <TouchableOpacity onPress={() => setModalSortVisible(true)}>
+                  <MaterialIcons name="sort" size={24} color="#6DA557" />
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalSortVisible}
+                  onRequestClose={() => setModalSortVisible(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalTitle}>Choisir une option de tri</Text>
+                      <FlatList
+                        data={sortingOptionsLoaded}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={styles.optionButton}
+                            onPress={() => {handleSortOptionPress(item)}}
+                          >
+                            <Text style={styles.optionText}>{item.label}</Text>
+                          </TouchableOpacity>
+                        )}
+                      />
+                      <Text></Text>
+                      <Button title="Fermer" onPress={() => setModalSortVisible(false)} color='#007FA9'/>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
+
               {isLoadListOpen?<AntDesign name="downcircle" size={24} color="white" />:<AntDesign name="leftcircle" size={24} color="white" />} 
             </View>
           </Pressable>
@@ -753,9 +843,41 @@ const Bc = ({ tabPces }) => {
             piecesLoaded.map((piece) => (
             <BcPce key={piece.id} piece={piece} loaded={true} headColor='#007FA9'/>
           ))}
-          <Pressable onPress = {()=>{setIsPropListOpen(!isPropListOpen)}} style={{backgroundColor:btnListPropColor}} onPressIn={ handleClickInPropList } onPressOut={ handleClickOutPropList }>
+          <Pressable onPress = {()=>{setActiveList('proposed');setIsPropListOpen(!isPropListOpen)}} style={{backgroundColor:btnListPropColor}} onPressIn={ handleClickInPropList } onPressOut={ handleClickOutPropList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
-              <Text style={styles.defaultText}> Pièces Proposées {piecesProp.length} / {pces.length}</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.defaultText}> Pièces Proposées {piecesProp.length} / {pces.length}   </Text>
+                {/* TRIER LES PIECES PROPOSEES */}
+                <TouchableOpacity onPress={() => setModalSortVisible(true)}>
+                  <MaterialIcons name="sort" size={24} color="#6DA557" />
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalSortVisible}
+                  onRequestClose={() => setModalSortVisible(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalTitle}>Choisir une option de tri</Text>
+                      <FlatList
+                        data={sortingOptionsProposed}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={styles.optionButton}
+                            onPress={() => {handleSortOptionPress(item)}}
+                          >
+                            <Text style={styles.optionText}>{item.label}</Text>
+                          </TouchableOpacity>
+                        )}
+                      />
+                      <Text></Text>
+                      <Button title="Fermer" onPress={() => setModalSortVisible(false)} color='#007FA9'/>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
               {isPropListOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
             </View>
           </Pressable>
@@ -763,9 +885,41 @@ const Bc = ({ tabPces }) => {
             piecesProp.map((piece) => (
             <BcPce key={piece.id} piece={piece} loaded={false} headColor='#82CFD8'/>
           ))}
-          <Pressable onPress = {()=>{setIsOtherListOpen(!isOtherListOpen)}} style={{backgroundColor:btnListOtherColor}} onPressIn={ handleClickInOtherList } onPressOut={ handleClickOutOtherList }>
+          <Pressable onPress = {()=>{setActiveList('other');setIsOtherListOpen(!isOtherListOpen)}} style={{backgroundColor:btnListOtherColor}} onPressIn={ handleClickInOtherList } onPressOut={ handleClickOutOtherList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
-              <Text style={styles.defaultText}> Pièces Autres {piecesOther.length} / {pces.length}</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.defaultText}> Pièces Autres {piecesOther.length} / {pces.length}   </Text>
+                {/* TRIER LES PIECES AUTRES */}
+                <TouchableOpacity onPress={() => setModalSortVisible(true)}>
+                  <MaterialIcons name="sort" size={24} color="#6DA557" />
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalSortVisible}
+                  onRequestClose={() => setModalSortVisible(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalTitle}>Choisir une option de tri</Text>
+                      <FlatList
+                        data={sortingOptionsOther}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={styles.optionButton}
+                            onPress={() => {handleSortOptionPress(item)}}
+                          >
+                            <Text style={styles.optionText}>{item.label}</Text>
+                          </TouchableOpacity>
+                        )}
+                      />
+                      <Text></Text>
+                      <Button title="Fermer" onPress={() => setModalSortVisible(false)} color='#007FA9'/>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
               {isOtherListOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
             </View>
           </Pressable>
@@ -798,29 +952,16 @@ const Bc = ({ tabPces }) => {
       <View style={styles.container2}>
         <View style={styles.container2_1}>
           {/* espace pr btns enregistrer valier et réinitialiser */}
-          {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'yellow', alignItems: 'stretch', flex: 1}}> */}
-
-            {/*<View style={{flex: 3, margin: 2}}>
-              <Pressable style={{backgroundColor: '#00334A', padding: 4}} onPress={() => recordBc()} disabled={isActionBeingExecuted}>
-                <Text style={{ color: 'white', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Enregistrer pg</Text>
-              </Pressable>
-            </View>*/}
-
-            {/* <Text>{"\n"}</Text> */}
-            {/* <Button onPress={() => valideBc()} title="Valider"></Button> */}
             <View style={{flex: 3, margin: 2}}>
               <Pressable style={{backgroundColor: buttonColor1, padding: 4}}  onPress={() => valideBc()} onPressIn={() => setButtonColor1('#6DA557')} onPressOut={() => setButtonColor1('#00334A')} disabled={isActionBeingExecuted}>
               <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Enregistrer</Text>
               </Pressable>
-              {/* <Text>{"\n"}</Text> */}
             </View>
             <View style={{flex: 3, margin: 2}}>
               <Pressable style={{backgroundColor: buttonColor2, padding: 4}}  onPress={() => livreBc()} onPressIn={() => setButtonColor2('#6DA557')} onPressOut={() => setButtonColor2('#00334A')} disabled={isActionBeingExecuted}>
               <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Livrable</Text>
               </Pressable>
-              {/* <Text>{"\n"}</Text> */}
             </View>
-            {/* <Button title="Réinitialiser" onPress={() => {setModalReinitVisible(true);}} /> */}
             <View style={{flex: 3, margin :2}}>
               <Pressable style={{backgroundColor: buttonColor3, padding: 4}}  onPress={() => {setModalReinitVisible(true);}} onPressIn={() => setButtonColor3('#6DA557')} onPressOut={() => setButtonColor3('#00334A')} disabled={isActionBeingExecuted}>
                 <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
@@ -842,7 +983,6 @@ Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement 
                             <Pressable style={styles.oneBtn} onPress={() => {handleReinitConfirm(bonChargement)}} disabled={isActionBeingExecuted}>
                               <Text style={styles.txtBtn}>Confirmer</Text>
                             </Pressable>
-                            {/* <Button title="Cancel" onPress={handleReinitCancel}/> */}
                             <Pressable style={styles.oneBtn} onPress={handleReinitCancel}>
                               <Text style={styles.txtBtn}>Annuler</Text>
                             </Pressable>
@@ -855,6 +995,7 @@ Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement 
           </View>
         </View>
       </View>
+      
     </View>
   );
 };
@@ -864,7 +1005,7 @@ const styles = StyleSheet.create({
     flex: 4.2
   },
   container2: {
-    flex: 1, marginLeft: 8, marginRight: 8
+    flex: 1, marginLeft: 8, marginRight: 8,
   },
   container2_1: {
     flexDirection: 'row', justifyContent: 'stretch', alignItems: 'center', borderTopColor:'#9CD2D5', borderTopWidth: 0, backgroundColor: '#ffffff', maxHeight: 60
@@ -967,6 +1108,32 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: 'bold',
+  },
+  optionButton: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  optionText: {
+    fontSize: 14,
   },
 });
 

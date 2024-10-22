@@ -49,6 +49,8 @@ export const CHANGE_LOAD_ACC = "CHANGE_LOAD_ACC";
 export const SEARCH_PCE_ID = "SEARCH_PCE_ID";
 export const ADD_PCE = "ADD_PCE";
 export const EMPTY_PCES_CHANGED = "EMPTY_PCES_CHANGED";
+export const SET_SORT_CRITERIA_OTHERLIST = "SET_SORT_CRITERIA_OTHERLIST";
+export const SET_SORT_CRITERIA = "SET_SORT_CRITERIA";
 
 //action's type to set application
 export const SET_BACKURL = "SET_BACKURL";
@@ -56,6 +58,21 @@ export const SET_URL = "SET_URL";
 export const UNSET_ZEBRA = "UNSET_ZEBRA";
 
 //action creators for API to get pces and accs...
+
+/* export const setSortCriteriaOtherlist = (obj_criteres) =>{
+  return {
+    type: SET_SORT_CRITERIA_OTHERLIST,
+    payload: obj_criteres,
+  }
+} */
+
+export const setSortCriteria = (objet_criteres) =>{
+  //console.error("OBJET CRITERES :"+ JSON.stringify(objet_criteres));
+  return {
+    type: SET_SORT_CRITERIA,
+    payload: objet_criteres,
+  }
+}
 
 export const emptyPcesChanged = () => {
   return {

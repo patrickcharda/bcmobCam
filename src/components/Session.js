@@ -52,8 +52,8 @@ const Session = ({ username, password, appLogin, endpointLogout, appliname }) =>
           <Text style={styles.titleModalView}>{`!!! \n`}</Text>
           <Text style={styles.textModalView}>{`Une session est déjà ouverte pour cet utilisateur.\n
 Vous pouvez au choix : \n
-+ CONTINUER - une nouvelle session prendra alors la place de l'existante
-+ QUITTER - pour sortir de l'application \n`}
+▪ CONTINUER - une nouvelle session prendra alors la place de l'existante
+▪ QUITTER - pour sortir de l'application \n`}
         </Text>
       </View>
       <View style={styles.modalBtns}>

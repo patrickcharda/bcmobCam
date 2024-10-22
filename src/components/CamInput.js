@@ -81,7 +81,7 @@ const CamInput = () => {
   }
 
   return (
-    <View style={{ flex: 0.8, position:'relative'}}>
+    <View style={{ flex: 0.6, position:'relative'}}>
       <Cam.CameraView 
         barcodeScannerSettings={{
           barcodeTypes: ["qr", "code39", "code93", "codabar", "code128", "upc_a", "ean13", "ean8"],
@@ -93,7 +93,7 @@ const CamInput = () => {
       />
       {scanned && (
         <View style={{ position: 'absolute', bottom: 100, left: 0, right: 0, alignItems: 'center' }}>
-          <Button title="Scanner" onPress={() => setScanned(false)} />
+          <Button title="Scanner" onPress={() => setScanned(false)} color='#007FA9'/>
         </View>
       )}
     </View>

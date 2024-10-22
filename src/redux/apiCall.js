@@ -33,7 +33,7 @@ const apiCall = (url, token, tableau = []) => (dispatch) => {
     return new Promise(() => {
       let username = tableau[0];
       let conf = {
-        headers: { appliname:appliname, username:username },
+        headers: {'appliname':appliname, 'username':username, 'token': token},
       };
       axios
         .get(url, conf)
