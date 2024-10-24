@@ -25,6 +25,8 @@ export const CLEAN_ALL_MESSAGES_ERRORS = "CLEAN_ALL_MESSAGES_ERRORS"
 //action's type for bc
 export const RECORD_SELECTED_BC = "RECORD_SELECTED_BC";
 export const PURGE_BC = "PURGE_BC";
+export const HEADER_BC_CHANGE_TRUE = "HEADER_BC_CHANGE_TRUE";
+export const HEADER_BC_CHANGE_FALSE = "HEADER_BC_CHANGE_FALSE";
 //action's type for pces and accs (pièces et accessoires)
 export const FETCH_PCE_SUCCESS = "FETCH_PCE_SUCCESS"
 export const LOAD_FULL_PCES_TAB = "LOAD_FULL_PCES_TAB"
@@ -51,6 +53,7 @@ export const ADD_PCE = "ADD_PCE";
 export const EMPTY_PCES_CHANGED = "EMPTY_PCES_CHANGED";
 export const SET_SORT_CRITERIA_OTHERLIST = "SET_SORT_CRITERIA_OTHERLIST";
 export const SET_SORT_CRITERIA = "SET_SORT_CRITERIA";
+export const PCE_ACC_CHANGE_FALSE = "PCE_ACC_CHANGE_FALSE"
 
 //action's type to set application
 export const SET_BACKURL = "SET_BACKURL";
@@ -65,6 +68,12 @@ export const UNSET_ZEBRA = "UNSET_ZEBRA";
     payload: obj_criteres,
   }
 } */
+
+export const pceAccChangeFalse = () => {
+  return {
+    type: PCE_ACC_CHANGE_FALSE,
+  }
+} 
 
 export const setSortCriteria = (objet_criteres) =>{
   //console.error("OBJET CRITERES :"+ JSON.stringify(objet_criteres));
@@ -229,6 +238,16 @@ export const purgeBc = () => {
     type: PURGE_BC,
   };
 };
+export const headerBcChangeTrue = () => {
+  return {
+    type: HEADER_BC_CHANGE_TRUE
+  };
+};
+export const headerBcChangeFalse = () => {
+  return {
+    type: HEADER_BC_CHANGE_FALSE
+  };
+};
 
 //action creators for login
 export const addToken = (token) => {
@@ -291,7 +310,6 @@ export const fetchDataPcesAccs = () => ({
 });
 
 export const fetchSuccess = (data) => (
-  //console.log("the data : "+JSON.stringify(data)),
   {
   type: API_SUCCESS,
   payload: data,
@@ -349,3 +367,5 @@ export const unsetZebra = () => {
     type: UNSET_ZEBRA,
   };
 };
+
+

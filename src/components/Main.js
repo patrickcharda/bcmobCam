@@ -3,6 +3,7 @@ import {
   View,
   Pressable,
   Text,
+  Alert,
 } from 'react-native';
 import LoginScreen from "./screens/LoginScreen";
 import BcListScreen from "./screens/BcListScreen";
@@ -11,13 +12,15 @@ import ShootSessionScreen from "./screens/ShootSessionScreen";
 import ConfigScreen from "./screens/ConfigScreen";
 import { toggleScanView, setBackurl, setUrl } from "../redux/actions";
 import { useSelector, useDispatch } from "react-redux";  
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+//import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 
 const Main = () => {
@@ -28,13 +31,17 @@ const Main = () => {
   const scanView = useSelector((state) => state.tokenReducer.scanView);
   const setbackurl = useSelector((state) => state.configReducer.backurl);
   const username = useSelector((state) => state.tokenReducer.username);
+  const navigation = useNavigation();
 
   return (
 
     <Stack.Navigator screenOptions={{
       headerStyle: {
         backgroundColor: '#00334A',
-      }, title: "",}}>
+      }, 
+      title: "",
+      headerLeft: null,
+      }}>
     {logged ? 
       [<Stack.Screen
         name="BcList"
@@ -44,8 +51,8 @@ const Main = () => {
           headerTintColor:'#fff',
           headerTitle: () => (
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 0 }}>
-                {<View style={{ flexGrow:1, justifyContent: 'center' }}><Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, textAlign: 'center' }}> </Text></View>}
-                <View style={{marginRight: 30}}>
+                <View style={{ justifyContent: 'center', flexBasis: '75%' }}><Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, textAlign: 'center' }}> </Text></View>
+                <View style={{ flexBasis: '25%'}}>
                   {/* <MaterialCommunityIcons name="account" size={24} color="gray" /> */}<Text style={{color: 'gray'}}>{username}</Text>
               </View>
               </View>
@@ -56,22 +63,22 @@ const Main = () => {
       <Stack.Screen 
       name="Bc" 
       component={BcScreen} 
-      options={({}) => ({
-      headerTintColor: '#fff',
-      headerTitle: () => (
-        <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '85%', marginTop: 0}}>
-          <View style={{ flexBasis: '60%', alignItems: 'center' }}>
-            <Pressable onPress={() => {dispatch(toggleScanView(scanView))}}>
-              <MaterialIcons name="qr-code-scanner" size={40} color="#ffffff" />
-            </Pressable>
+      options={({ navigation }) => ({
+        headerTintColor: '#00334A',
+        headerLeft: null,
+        headerTitle: () => (
+          <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'stretch', width: '100%', marginTop: 0, zIndex: 4}}>
+            <View style={{ flexBasis: '90%', alignItems: 'center' }}>
+              <Pressable onPress={() => {dispatch(toggleScanView(scanView))}}>
+                <MaterialIcons name="qr-code-scanner" size={40} color="#ffffff" />
+              </Pressable>
+            </View>
+            <View style={{ flexBasis: '20%', alignItems: 'flex-end', justifyContent: "flex-end" }}>
+                    {/* <MaterialCommunityIcons name="account" size={24} color="gray" /> */}<Text style={{color: 'gray'}}>{username}</Text>
+            </View>
           </View>
-          <View style={{ flexBasis: '26%', alignItems: 'flex-end' }}>
-                  {/* <MaterialCommunityIcons name="account" size={24} color="gray" /> */}<Text style={{color: 'gray'}}>{username}</Text>
-          </View>
-        </View>
-      ),
-      })
-    }
+        ),
+      })}
       key="2"
     /> 
       ]

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { recordSelectedBc } from "../redux/actions";
+import { recordSelectedBc, headerBcChangeTrue } from "../redux/actions";
 
 const BcHeader = ({ currentBc }) => {
 
@@ -23,15 +23,14 @@ const BcHeader = ({ currentBc }) => {
 
   const handleConfirm = (bc) => {
     // Handle the confirm action here
-    //console.log('OBSERVATIONS BC ', text);
     const updatedBc = { ...bc, bc_observ: text };
     dispatch(recordSelectedBc(updatedBc));
+    dispatch(headerBcChangeTrue()); //new
     setModalVisible(false);
   };
 
   const handleCancel = () => {
     // Handle the cancel action here
-    //console.log('Cancelled');
     setModalVisible(false);
   };
 
@@ -93,9 +92,9 @@ const BcHeader = ({ currentBc }) => {
                           <Pressable style={styles.oneBtn} onPress={() => {handleConfirm(bc)}}>
                             <Text style={styles.txtBtn}>Confirmer</Text>
                           </Pressable>
-                          <Pressable style={styles.oneBtn} onPress={() => handleCancel()}>
+                          {/* <Pressable style={styles.oneBtn} onPress={() => handleCancel()}>
                             <Text style={styles.txtBtn}>Annuler</Text>
-                          </Pressable>
+                          </Pressable> */}
                       </View>
                     </View>
                   </View>
@@ -177,7 +176,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'stetch',
+    alignItems: 'stretch',
   },
   modalView: {
     margin: 10,
@@ -200,10 +199,11 @@ const styles = StyleSheet.create({
   },
   textModalView: {
     fontSize: 20,
+    padding:3
   },
   modalBtns: {
     flexDirection: 'row',
-    justifyContent: 'stretch',
+    justifyContent: 'center',
   },
   oneBtn: {
     flex: 0.5,

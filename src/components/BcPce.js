@@ -11,7 +11,7 @@ import {
   Image
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { changePceLoadedStatus, changePceObservBc, AddPce } from "../redux/actions";
+import { changePceLoadedStatus, changePceObservBc,  } from "../redux/actions";
 import * as React from "react";
 
 const BcPce = ( {piece, loaded, headColor} ) => {
@@ -160,9 +160,9 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                           <Pressable style={styles.oneBtn} onPress={handleConfirm}>
                             <Text style={styles.txtBtn}>Confirmer</Text>
                           </Pressable>
-                          <Pressable style={styles.oneBtn} onPress={handleCancel}>
+                          {/* <Pressable style={styles.oneBtn} onPress={handleCancel}>
                             <Text style={styles.txtBtn}>Annuler</Text>
-                          </Pressable>
+                          </Pressable> */}
                         </View>
                     </View>
                   </View>
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'stetch',
+    alignItems: 'stretch',
   },
   modalView: {
     margin: 10,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   modalBtns: {
     flexDirection: 'row',
-    justifyContent: 'stretch',
+    justifyContent: 'center',
   },
   oneBtn: {
     flex: 0.5,

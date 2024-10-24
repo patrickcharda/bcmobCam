@@ -26,6 +26,7 @@ import {
   EMPTY_PCES_CHANGED,
   SET_SORT_CRITERIA_OTHERLIST,
   SET_SORT_CRITERIA,
+  PCE_ACC_CHANGE_FALSE,
 } from "./actions";
 
 const initialState = {
@@ -40,6 +41,7 @@ const initialState = {
   pcesChanged:[],
   sortCriteria: '',
   sortOrder:'asc',
+  aPceOrAccHasChanged: false,
 };
 
 const getFormatedDate = () => {
@@ -62,6 +64,12 @@ const getFormatedDate = () => {
 
 const pcesAccsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case PCE_ACC_CHANGE_FALSE:
+      return {
+        ...state,
+        aPceOrAccHasChanged: false
+      }
+
     case SET_SORT_CRITERIA:
       const new_Criteria= action.payload.criteria;
       const new_Order= action.payload.order;
@@ -293,6 +301,7 @@ const pcesAccsReducer = (state = initialState, action) => {
         accsLoaded: newArrayLoadedAccs,
         accsProp: newArrayPropAccs,
         accs: newArrayAccs,
+        aPceOrAccHasChanged: true,
       } 
     case CHANGE_LOAD_ACC:
       let acc_id = action.payload;
@@ -318,6 +327,7 @@ const pcesAccsReducer = (state = initialState, action) => {
         accsLoaded: aNewArrayLoadedAccs,
         accsProp: aNewArrayPropAccs,
         accs: aNewArrayAccs,
+        aPceOrAccHasChanged: true,
       } 
     case CHANGE_PCE_OBSERV_BC:
       let modifiedElement = Object.assign({},action.payload.piece);
@@ -351,6 +361,7 @@ const pcesAccsReducer = (state = initialState, action) => {
         pcesProp: new_ArrayPcesProp,
         pcesOther: new_ArrayPcesOther,
         pces: new_ArrayPces,
+        aPceOrAccHasChanged: true,
       }
     case CHANGE_ACC_OBSERV_BC:
       let obje = action.payload;
@@ -376,6 +387,7 @@ const pcesAccsReducer = (state = initialState, action) => {
         accsLoaded: newArrLoadedAccs,
         accsProp: newArrPropAccs,
         accs: newArrAccs,
+        aPceOrAccHasChanged: true,
       }
     case API_PENDING_PCES_ACCS:
       return {
@@ -406,6 +418,7 @@ const pcesAccsReducer = (state = initialState, action) => {
             pcesLoaded: newArrayPcesLoaded,
             pcesProp: newArrayPcesProp,
             pces: newArrayPces,
+            aPceOrAccHasChanged: true,
           }
         } else {
           // ajouter la pce ds la liste des autres pces (ni chargées ni proposées)
@@ -415,6 +428,7 @@ const pcesAccsReducer = (state = initialState, action) => {
             pcesLoaded: newArrayPcesLoaded,
             pcesOther: newArrayPcesOther,
             pces: newArrayPces,
+            aPceOrAccHasChanged: true,
           }
         }
       } else {
@@ -430,6 +444,7 @@ const pcesAccsReducer = (state = initialState, action) => {
             pcesLoaded: newArrayPcesLoaded,
             pcesProp: newArrayPcesProp,
             pces: newArrayPces,
+            aPceOrAccHasChanged: true,
           }
         } else {
           // supprimer de la liste des autres pièces (puisque pce passée dans la liste des pces chargées)
@@ -440,6 +455,7 @@ const pcesAccsReducer = (state = initialState, action) => {
             pcesLoaded: newArrayPcesLoaded,
             pcesOther: newArrayPcesOther,
             pces: newArrayPces,
+            aPceOrAccHasChanged: true,
           }
         }
       };
@@ -580,6 +596,7 @@ const pcesAccsReducer = (state = initialState, action) => {
         pcesLoaded: [],
         pcesProp: [],
         pcesOther: [],
+        aPceOrAccHasChanged: false,
       }
     case LOAD_LOADED_ACCS:
       return {

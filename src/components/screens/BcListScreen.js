@@ -3,12 +3,13 @@ import BcLast from '../BcLast';
 import { View, ScrollView } from 'react-native';
 import Message from "../Message";
 import Footer from "../Footer";
-import { useSelector, } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const BcListScreen = () => {
 
     const isActionBeingExecuted = useSelector((state) => state.tokenReducer.isActionBeingPerformed);
-
+    
     return (
         <ScrollView contentContainerStyle={{flex:1}}>
             <Message />
