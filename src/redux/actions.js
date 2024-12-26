@@ -27,6 +27,7 @@ export const RECORD_SELECTED_BC = "RECORD_SELECTED_BC";
 export const PURGE_BC = "PURGE_BC";
 export const HEADER_BC_CHANGE_TRUE = "HEADER_BC_CHANGE_TRUE";
 export const HEADER_BC_CHANGE_FALSE = "HEADER_BC_CHANGE_FALSE";
+export const CHARGEMENT_BC_EN_COURS = "CHARGEMENT_BC_EN_COURS";
 //action's type for pces and accs (pièces et accessoires)
 export const FETCH_PCE_SUCCESS = "FETCH_PCE_SUCCESS"
 export const LOAD_FULL_PCES_TAB = "LOAD_FULL_PCES_TAB"
@@ -365,6 +366,13 @@ export const setUrl = (anurl) => {
 export const unsetZebra = () => {
   return {
     type: UNSET_ZEBRA,
+  };
+};
+
+export const chargeUnBC = (true_or_false) => {
+  return {
+    type: CHARGEMENT_BC_EN_COURS,
+    payload: true_or_false,
   };
 };
 

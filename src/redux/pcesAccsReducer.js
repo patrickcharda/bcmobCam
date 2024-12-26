@@ -27,6 +27,7 @@ import {
   SET_SORT_CRITERIA_OTHERLIST,
   SET_SORT_CRITERIA,
   PCE_ACC_CHANGE_FALSE,
+  CHARGEMENT_BC_EN_COURS,
 } from "./actions";
 
 const initialState = {
@@ -42,6 +43,7 @@ const initialState = {
   sortCriteria: '',
   sortOrder:'asc',
   aPceOrAccHasChanged: false,
+  chargementEnCoursBC: false,
 };
 
 const getFormatedDate = () => {
@@ -612,6 +614,11 @@ const pcesAccsReducer = (state = initialState, action) => {
       return {
         ...state,
         accs: action.payload,
+      }
+    case CHARGEMENT_BC_EN_COURS:
+      return {
+        ...state,
+        chargementEnCoursBC: action.payload,
       }
     default:
       return state;

@@ -6,12 +6,13 @@ import {
   View,
   Modal,
   Pressable,
-  Alert
+  Alert, 
+  Button
 } from "react-native";
 import apiCall from "../redux/apiCall";
 import axios from 'axios';
 import { recordSelectedBc, purgePcesAccs,
-defineMessage, purgeBc, defineError, defineErrormsg, defineMsg, cleanAllMessagesErrors, actionInProgress } from "../redux/actions";
+defineMessage, purgeBc, defineError, defineErrormsg, defineMsg, cleanAllMessagesErrors, actionInProgress, chargeUnBC } from "../redux/actions";
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from '@react-navigation/native';
@@ -51,6 +52,7 @@ const BcList = () => {
   const [isReinitOpen, setIsReinitOpen] = React.useState(false);
   const [refresh, setRefresh] = React.useState(0);
   const [modalVisible, setModalVisible] = React.useState(false);
+  //const [waitVisible, setWaitVisible] = React.useState(false);
   const [modalActualiserVisible, setModalActualiserVisible] = React.useState(false);
   const [currentBC, setCurrentBC] = React.useState(null);
   
@@ -58,6 +60,7 @@ const BcList = () => {
   const token = useSelector((state) => state.tokenReducer.token);
   const username = useSelector((state) => state.tokenReducer.username);
   const lastEditedBc = useSelector((state) => state.bcReducer.bc);
+  const isLoadingBC = useSelector((state) => state.pcesAccsReducer.chargementEnCoursBC);
   //const err = useSelector((state) => state.apiReducer.error);
   //const msg = useSelector((state) => state.apiReducer.message);
   const BASE_URL = useSelector((state) => state.configReducer.url);
@@ -70,6 +73,10 @@ const BcList = () => {
 
   const endpointCheckok = BASE_URL+"/bcweb/checkok/";
   const endpointCheckwib = BASE_URL+"/bcweb/checkwib/";
+  
+  /* React.useEffect(() => {
+          dispatch(chargeUnBC(false));
+        }, []); */
   
   React.useEffect(() => {
     dispatch(apiCall(BASE_URL+"/bcweb/bcx/", token))
@@ -523,14 +530,27 @@ const BcList = () => {
             </Pressable>
             {isOpen &&
               data.map((bc, index) => (
-                <View style={{backgroundColor: '#CEDDED'}} key={index}>
-                <Pressable  style={{padding: 5, backgroundColor: buttonColor[index]}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} onPressIn={() => handleClickIn(index)} onPressOut={() => handleClickOut(index)} disabled={isActionBeingPerformed}>
+                <View style={{backgroundColor: '#CEDDED'}} key={bc.bc_num ?? index}>
+                <Pressable  style={{padding: 5, backgroundColor: buttonColor[index]}} onPress={isActionBeingPerformed ? null : () => {dispatch(chargeUnBC(true));setTimeout(() => {
+                  defineBc(bc);}, 0);}} onPressIn={() => handleClickIn(index)} onPressOut={() => handleClickOut(index)} disabled={isActionBeingPerformed}>
                   <Text style={{fontSize: 15, borderBottomWidth: 0.7, borderColor: 'white'}}>
                     {bc.bc_num} | {(bc.bc_statut === "" || bc.bc_statut === " " || bc.bc_statut === null || bc.bc_statut === undefined) ? '' :bc.bc_statut + ' | '}{bc.pieces.length >= 0 ? bc.pieces.length + ' pièces' : 'aucune piece'}{(bc.bc_webuser =='' || bc.bc_webuser == undefined || bc.bc_webuser == null) ? "" : ' | ' + bc.bc_webuser}
                   </Text>
                 </Pressable>
                 </View>
               ))}
+              { isLoadingBC && (
+                <Modal
+                animationType="slide"
+                transparent={false}
+                visible={isLoadingBC}
+                >
+                  <View style={styles.centeredView}>
+                    <Text>Chargement en cours, veuillez patienter...</Text>
+                    {/*<Button title="Fermer" onPress={() => setWaitVisible(false)} />*/}
+                  </View>
+                </Modal>
+                )}
           </ScrollView>
         )}
         <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', marginTop: 0, padding: 10}}>

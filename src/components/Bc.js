@@ -5,7 +5,7 @@ import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { defineMessage, changePceDate, changePceLoadedDate, changePcePropDate, changePceOtherDate, loadFullPcesTab, loadLoadedPcesTab,
    loadPropPcesTab, loadOtherPcesTab, loadLoadedAccs, loadPropAccs, loadAccs, changeAccDate,
-    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc, emptyPcesChanged, setSortCriteriaOtherlist, setSortCriteria } from "../redux/actions";
+    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc, emptyPcesChanged, setSortCriteriaOtherlist, setSortCriteria, chargeUnBC } from "../redux/actions";
 import {
   ScrollView,
   View,
@@ -227,6 +227,12 @@ const Bc = ({ tabPces }) => {
     dispatch(loadOtherPcesTab(newPcesOther));
     let fullPcesTab = newPcesLoaded.concat(newPcesProp, newPcesOther);
     dispatch(loadFullPcesTab(fullPcesTab));
+  }, []);
+
+  
+
+  React.useEffect(() => {
+    dispatch(chargeUnBC(false));
   }, []);
 
   

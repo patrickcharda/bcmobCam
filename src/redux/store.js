@@ -36,7 +36,7 @@ const persistConfig = {
   key: 'root',
   storage: ExpoFileSystemStorage,
   whitelist: ['tokenReducer', 'bcReducer', 'pcesAccsReducer', 'configReducer'],
-  timeout: 200000,
+  timeout: 400000,
 };
 
 const persistedReducer = persistReducer(persistConfig, appReducers);
@@ -50,13 +50,19 @@ const persistedReducer = persistReducer(persistConfig, appReducers);
   }).concat(thunk, logger),
 }); */
 
+if (typeof thunk !== 'function') {
+  throw new Error('Thunk middleware must be a function '+typeof thunk);
+} else {
+  console.log('Thunk is a function');
+}
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }).concat(thunk, logger),
+  }).concat(thunk,logger),
 });
 
 const persistor = persistStore(store);
